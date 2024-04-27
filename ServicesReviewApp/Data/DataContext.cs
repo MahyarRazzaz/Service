@@ -9,6 +9,10 @@ namespace ServicesReviewApp.Data
         {
             
         }
+
+      
+
+     
         public DbSet<Car> Cars { get; set; } 
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Part> parts { get; set; } 
@@ -18,6 +22,8 @@ namespace ServicesReviewApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
+
             modelBuilder.Entity<ServicesDetail>()
                 .HasKey(Se => new { Se.ServicesDetailId });
             modelBuilder.Entity<ServicesDetail>()
