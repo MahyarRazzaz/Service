@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using ServicesReviewApp.Data;
+using ServicesReviewApp.Interfaces;
+using ServicesReviewApp.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<ICarRepository,CarRepositorycs >();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
