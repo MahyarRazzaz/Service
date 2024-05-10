@@ -1,4 +1,6 @@
-﻿namespace ServicesReviewApp.Models
+﻿using ServicesReviewApp.Dto;
+
+namespace ServicesReviewApp.Models
 {
     public class Car
     {
@@ -7,6 +9,6 @@
         public string ChassisNumber { get; set; }
         public int PlatsNumber { get; set; }
         public ICollection<Service> Services { get; set; }
-
+        
     }
 }

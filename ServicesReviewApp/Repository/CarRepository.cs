@@ -7,11 +7,11 @@ using ServicesReviewApp.Models;
 
 namespace ServicesReviewApp.Repository
 {
-    public class CarRepositorycs : ICarRepository
+    public class CarRepository : ICarRepository
     {
         private readonly DataContext context;
 
-        public CarRepositorycs(DataContext context)
+        public CarRepository(DataContext context)
         {
             context = context;
         }
@@ -25,12 +25,9 @@ namespace ServicesReviewApp.Repository
             return context.Cars.Where(c => c.CarTitle == Title).FirstOrDefault();
         }
         //get service question
-        public Car GetCarService(int id)
+        public ICollection<Service> GetCarService(int id)
         {
-            var service = context.Services.Where(S => S.CarId == id).FirstOrDefault();
-            if (service != null) {}
-            return null;
-         
+            return context.Services.Where(s => s.CarId == id).ToList();
         }
         
         public ICollection<Car>GetCars()

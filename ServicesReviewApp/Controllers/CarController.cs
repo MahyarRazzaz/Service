@@ -33,16 +33,14 @@ namespace ServicesReviewApp.Controllers
         {
             if (!carRepository.CarExist(id))
                 return NotFound();
-            var datamodel = carRepository.getCar(id);
+            var datamodel = carRepository.GetCars();
 
-            var car = datamodel.Select(c => new CarDto { CarId = c.carid, CarTitle = c.CarTitle });
-
-
-
+            var Car = datamodel.Select(c => new CarDto { CarId = c.CarId, CarTitle = c.CarTitle, ChassisNumber = c.ChassisNumber, PlatsNumber = c.PlatsNumber });
+                
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(car);
+            return Ok(Car);
         }
 
     }

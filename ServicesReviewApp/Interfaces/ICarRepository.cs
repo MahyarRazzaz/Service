@@ -8,7 +8,7 @@ namespace ServicesReviewApp.Interfaces
 
         Car getCar (int id);
         Car GetCar (string Title);
-        Car GetCarService(int id);
+        ICollection<Service> GetCarService(int id);
         bool CarExist (int id);
     }
 }

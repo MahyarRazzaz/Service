@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ServicesReviewApp.Dto;
 using ServicesReviewApp.Interfaces;
 using ServicesReviewApp.Models;
 using ServicesReviewApp.Repository;
@@ -17,7 +18,7 @@ namespace ServicesReviewApp.Controllers
         }
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<Customer>))]
-        public IActionResult GetCars()
+        public IActionResult GetCustomer()
         {
             var Customers = customerRepository.GetCustomers();
 
@@ -25,6 +26,21 @@ namespace ServicesReviewApp.Controllers
                 return BadRequest(ModelState);
 
             return Ok(Customers);
+        }
+        [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(Customer))]
+        [ProducesResponseType(400)]
+        public IActionResult GetCustomer(int id)
+        {
+            if (!customerRepository.customerExist(id))
+                return NotFound();
+            var datamodel = customerRepository.GetCustomers();
+
+            var customer = datamodel.Select(c=>new CustomerDto {CustomerId=c.CustomerId,FirstName=c.FirstName,LastName=c.LastName});
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(customer);
         }
     }
 }
