@@ -35,7 +35,7 @@ namespace ServicesReviewApp.Controllers
         public IActionResult GetServiceTypes(int id)
         {
 
-            if (!serviceTypeRepository.servicTypeExist(id))
+            if (!serviceTypeRepository.ServicTypeExist(id))
                 return NotFound();
 
            
@@ -46,6 +46,71 @@ namespace ServicesReviewApp.Controllers
                 return BadRequest(ModelState);
 
             return Ok(ServiceType);
+        }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateServiceType([FromBody] ServiceTypeDto servicecreate)
+        {
+            if (servicecreate == null)
+                return BadRequest(ModelState);
+
+            
+            var servicetype = serviceTypeRepository.GetServiceTypes().Where(s=>s.ServiceTypeId==servicecreate.ServiceTypeId).FirstOrDefault();
+
+            if (servicetype != null)
+            {
+                ModelState.AddModelError("", "ServiceType already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+           
+            return Ok("Successfully created");
+        }
+        [HttpPut("{servicetypeid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateServiceType(int servicetypeid, [FromBody] ServiceTypeDto updateservicetype)
+        {
+            if (updateservicetype == null)
+                return BadRequest(ModelState);
+
+            if (servicetypeid != updateservicetype.ServiceTypeId)
+                return BadRequest(ModelState);
+
+            if (!serviceTypeRepository.ServicTypeExist(servicetypeid));
+            return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return NoContent();
+        }
+        [HttpDelete("{servicetypeid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteServiceType(int servicetypeid)
+        {
+            if (!serviceTypeRepository.ServicTypeExist(servicetypeid))
+            {
+                return NotFound();
+            }
+
+            var servicetypeToDelete = serviceTypeRepository.GetServiceType(servicetypeid);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (serviceTypeRepository.DeleteServiceType(servicetypeToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting service");
+            }
+
+            return NoContent();
         }
     }
 }

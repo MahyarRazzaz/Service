@@ -47,5 +47,70 @@ namespace ServicesReviewApp.Controllers
 
             return Ok(part);
         }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePart(  [FromBody] PartDto partCreate)
+        {
+            if (partCreate == null)
+                return BadRequest(ModelState);
+
+            var part = partRepository.GetParts().Where(p => p.PartId == partCreate.PartId).FirstOrDefault();
+
+            if (part != null)
+            {
+                ModelState.AddModelError("", "part already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok("Successfully created");
+        }
+        [HttpPut("{partid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdatePart(int partid, [FromBody] PartDto updatepart)
+        {
+            if (updatepart == null)
+                return BadRequest(ModelState);
+
+            if (partid != updatepart.PartId)
+                return BadRequest(ModelState);
+
+            if (!partRepository.PartExist(partid));
+                      return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return NoContent();
+        }
+        [HttpDelete("{partid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeletePart(int partid)
+        {
+            if (!partRepository.PartExist(partid))
+            {
+                return NotFound();
+            }
+
+            var partToDelete = partRepository.GetPart(partid);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (partRepository.DeletePart(partToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting part");
+            }
+
+            return NoContent();
+        }
+      }
     }
-}

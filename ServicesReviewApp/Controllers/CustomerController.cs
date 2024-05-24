@@ -9,7 +9,7 @@ namespace ServicesReviewApp.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class CustomerController : Controller
-    {
+    { 
         private readonly ICustomerRepository customerRepository;
 
         public CustomerController(ICustomerRepository customerRepository)
@@ -42,5 +42,81 @@ namespace ServicesReviewApp.Controllers
 
             return Ok(customer);
         }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateCustomer([FromBody] CustomerDto customerCreate)
+        {
+            if (customerCreate == null)
+                return BadRequest(ModelState);
+
+            var customer = customerRepository.GetCustomers()
+                .Where(c=>c.CustomerId == customerCreate.CustomerId)
+                .FirstOrDefault();
+
+            if (customer != null)
+            {
+                ModelState.AddModelError("", "Customer already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            /*var customermap = _mapper.Map<Customer>(customerCreate);
+
+            if (!customerRepository.CreateCustomer(customermap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
+            */
+
+            return Ok("Successfully created");
+        }
+        [HttpPut("{customerid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateCaustomer(int customerid, [FromBody] CustomerDto updatecustomer)
+        {
+            if (updatecustomer == null)
+                return BadRequest(ModelState);
+
+            if (customerid != updatecustomer.CustomerId)
+                return BadRequest(ModelState);
+
+            if (!customerRepository.customerExist(customerid));
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return NoContent();
+        }
+        [HttpDelete("{customerId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteCustomer(int customerid)
+        {
+            if (!customerRepository.customerExist(customerid))
+            {
+                return NotFound();
+            }
+
+            var customerToDelete = customerRepository.GetCustomerById(customerid);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (!customerRepository.DeleteCustomer(customerToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting customer");
+            }
+
+            return NoContent();
+        }
+
     }
 }

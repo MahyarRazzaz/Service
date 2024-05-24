@@ -1,4 +1,5 @@
-﻿using ServicesReviewApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using ServicesReviewApp.Data;
 using ServicesReviewApp.Interfaces;
 using ServicesReviewApp.Models;
 
@@ -11,6 +12,18 @@ namespace ServicesReviewApp.Repository
         public ServiceRepository(DataContext context) 
         {
             this.context = context;
+        }
+
+        public bool CreateService(Service service)
+        {
+           context.Add(service);
+            return Save();
+        }
+
+        public bool DeleteService(Service service)
+        {
+            context.Remove(service);
+            return Save();
         }
 
         public Service GetService(int id)
@@ -28,9 +41,21 @@ namespace ServicesReviewApp.Repository
             return context.Services.OrderBy(s => s.ServiceId).ToList();
         }
 
+        public bool Save()
+        {
+            var saved = context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
         public bool ServiceExist(int id)
         {
             return context.Services.Any(s => s.ServiceId == id);
+        }
+
+        public bool UpdateService(Service service)
+        {
+            context.Update(service);
+            return Save();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace ServicesReviewApp.Repository
 
         public CarRepository(DataContext context)
         {
-            context = context;
+           this.context = context;
         }
         public Car getCar(int id)
         {
@@ -40,7 +40,28 @@ namespace ServicesReviewApp.Repository
             return context.Cars.Any(c => c.CarId == id);
         }
 
+        public bool CreateCar(Car car)
+        {
+            context.Add(car);
+            return Save();
+        }
 
+        public bool UpdateCar(Car car)
+        {
+           context.Update(car);
+            return Save();
+        }
 
+        public bool DeleteCar(Car car)
+        {
+            context.Remove(car);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = context.SaveChanges();
+            return saved > 0 ? true : false; 
+        }
     }
 }

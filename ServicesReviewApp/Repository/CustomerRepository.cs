@@ -9,11 +9,25 @@ namespace ServicesReviewApp.Repository
         private readonly DataContext context;
         public CustomerRepository(DataContext context)
         {
-            context = context;
-        } 
+            this.context = context;
+        }
+
+        public bool CreateCustomer(Customer customer)
+        {
+            context.Add(customer);
+            return Save();
+        }
+
         public bool customerExist(int id)
         {
             return context.Customers.Any(c=>c.CustomerId == id);
+        }
+
+
+        public bool DeleteCustomer(Customer customer)
+        {
+            context.Remove(customer);
+            return Save();
         }
 
         public ICollection<Service> GetCarService(int id)
@@ -34,6 +48,18 @@ namespace ServicesReviewApp.Repository
         public ICollection<Customer> GetCustomers()
         {
             return context.Customers.OrderBy(c=>c.CustomerId).ToList();
+        }
+
+        public bool Save()
+        { 
+            var saved = context.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        public bool UpdateCustomer(Customer customer)
+        {
+            context.Update(customer);
+            return Save();
         }
     }
 }

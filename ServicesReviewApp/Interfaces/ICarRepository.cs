@@ -10,5 +10,10 @@ namespace ServicesReviewApp.Interfaces
         Car GetCar (string Title);
         ICollection<Service> GetCarService(int id);
         bool CarExist (int id);
+        bool CreateCar(Car car);
+        bool UpdateCar(Car car);
+        bool DeleteCar(Car car);
+        bool Save();
+
     }
 }

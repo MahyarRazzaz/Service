@@ -48,5 +48,70 @@ namespace ServicesReviewApp.Controllers
 
             return Ok(service);
         }
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult Createservice([FromBody] ServiceDto serviceCreate)
+        {
+            if (serviceCreate== null)
+                return BadRequest(ModelState);
+
+            
+            var service = serviceRepository.GetServices().Where(s=>s.ServiceId==serviceCreate.ServiceId).FirstOrDefault();
+
+            if (service != null)
+            {
+                ModelState.AddModelError("", "service already exists");
+                return StatusCode(422, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok("Successfully created");
+        }
+        [HttpPut("{serviceid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult Updateservice(int serviceid, [FromBody] ServiceDto updateservice)
+        {
+            if (updateservice == null)
+                return BadRequest(ModelState);
+
+            if (serviceid != updateservice.ServiceId)
+                return BadRequest(ModelState);
+
+            if (!serviceRepository.ServiceExist(serviceid));
+            return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            return NoContent();
+        }
+        [HttpDelete("{serviceid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteService(int serviceid)
+        {
+            if (!serviceRepository.ServiceExist(serviceid))
+            {
+                return NotFound();
+            }
+
+            var serviceToDelete = serviceRepository.GetService(serviceid);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (serviceRepository.DeleteService(serviceToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting service");
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<ICarRepository,CarRepository >();
 builder.Services.AddScoped<ICustomerRepository,CustomerRepository >();
 builder.Services.AddScoped<IPartRepository, PartRepository>();
+builder.Services.AddScoped<IServiceRepository,ServiceRepository>();
 builder.Services.AddScoped<IServiceTypeRepository,ServiceTypeRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

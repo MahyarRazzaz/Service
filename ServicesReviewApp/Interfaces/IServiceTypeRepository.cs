@@ -8,6 +8,10 @@ namespace ServicesReviewApp.Interfaces
         ServiceType GetServiceType(int id);
         ServiceType GetServiceType(string Title);
         ICollection<ServicesDetail> GetServicesDetailType(int id);
-        bool servicTypeExist (int id);
+        bool ServicTypeExist (int id);
+        bool CreateServiceType(ServiceType serviceType);
+        bool UpdateServiceType(ServiceType serviceType);
+        bool DeleteServiceType(ServiceType serviceType);
+        bool Save();
     }
 }
