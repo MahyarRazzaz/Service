@@ -69,7 +69,7 @@ namespace ServicesReviewApp.Controllers
                 return BadRequest(ModelState);
             var servicemap = new Service
             {
-                ServiceId = serviceCreate.ServiceId,
+               // ServiceId = serviceCreate.ServiceId,
                 ServiceTitle = serviceCreate.ServiceTitle,
                 Wage = serviceCreate.Wage,
                 ServiceNumber = serviceCreate.ServiceNumber,
