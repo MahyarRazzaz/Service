@@ -66,7 +66,21 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-           
+
+            var servicetypemap = new ServiceType
+            {
+               // ServiceTypeId = servicecreate.ServiceTypeId,
+               ServiceTypeTitle = servicecreate.ServiceTypeTitle,
+               
+            };
+
+            if (!serviceTypeRepository.CreateServiceType(servicetypemap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
+
+
             return Ok("Successfully created");
         }
         [HttpPut("{servicetypeid}")]

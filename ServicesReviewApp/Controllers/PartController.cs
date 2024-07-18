@@ -67,6 +67,18 @@ namespace ServicesReviewApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            var partmap = new Part
+            {
+               // PartId = partCreate.PartId,
+                PartTitle = partCreate.PartTitle,
+            };
+
+            if (!partRepository.CreatePart(partmap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
+
             return Ok("Successfully created");
         }
         [HttpPut("{partid}")]
@@ -81,12 +93,12 @@ namespace ServicesReviewApp.Controllers
             if (partid != updatepart.PartId)
                 return BadRequest(ModelState);
 
-            if (!partRepository.PartExist(partid));
-                      return NotFound();
+            if (!partRepository.PartExist(partid)) ;
+            return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
-
+            
             return NoContent();
         }
         [HttpDelete("{partid}")]

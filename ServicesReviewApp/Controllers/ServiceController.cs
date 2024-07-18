@@ -67,6 +67,20 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var servicemap = new Service
+            {
+                ServiceId = serviceCreate.ServiceId,
+                ServiceTitle = serviceCreate.ServiceTitle,
+                Wage = serviceCreate.Wage,
+                ServiceNumber = serviceCreate.ServiceNumber,
+                ServiceDate = serviceCreate.ServiceDate,
+            };
+
+            if (!serviceRepository.CreateService(servicemap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
 
             return Ok("Successfully created");
         }

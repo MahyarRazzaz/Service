@@ -62,6 +62,17 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var customermap = new Customer
+            {
+                //CustomerId = customerCreate.CustomerId,
+                FirstName = customerCreate.FirstName,
+                LastName = customerCreate.LastName,
+            };
+            if (!customerRepository.CreateCustomer(customermap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
 
             /*var customermap = _mapper.Map<Customer>(customerCreate);
 

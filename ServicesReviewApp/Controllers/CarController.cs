@@ -51,10 +51,10 @@ namespace ServicesReviewApp.Controllers
                 return BadRequest(ModelState);
 
             var car = carRepository.GetCars()
-                .Where(c=>c.CarTitle.Trim().ToUpper() == carCreate.CarTitle.TrimEnd().ToUpper())
+                .Where(c => c.CarTitle.Trim().ToUpper() == carCreate.CarTitle.TrimEnd().ToUpper())
                 .FirstOrDefault();
 
-            if (car!= null)
+            if (car != null)
             {
                 ModelState.AddModelError("", "Car already exists");
                 return StatusCode(422, ModelState);
@@ -62,7 +62,18 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
+            var carmap = new Car
+            {
+               // CarId = carCreate.CarId,
+                CarTitle = carCreate.CarTitle,
+                ChassisNumber = carCreate.ChassisNumber,
+                PlatsNumber = carCreate.PlatsNumber,
+            };
+            if (!carRepository.CreateCar(carmap))
+            {
+                ModelState.AddModelError("", "Something went wrong while savin");
+                return StatusCode(500, ModelState);
+            }
             /*var carmap = _mapper.Map<Car>(carCreate);
 
                 if (!carRepository.CreateCar(carmap))
@@ -92,15 +103,15 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest();
+            
 
-           /* var carMap = _mapper.Map<Car>(updatedcar);
-
-            if (!carRepository.UpdateCar(carMap))
-            {
-                ModelState.AddModelError("", "Something went wrong updating category");
-                return StatusCode(500, ModelState);
-            }
-           */
+            /* var carMap = _mapper.Map<Car>(updatedcar);
+             if (!carRepository.UpdateCar(carMap))
+             {
+                 ModelState.AddModelError("", "Something went wrong updating category");
+                 return StatusCode(500, ModelState);
+             }
+            */
             return NoContent();
         }
         [HttpDelete("{carId}")]
