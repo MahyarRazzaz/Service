@@ -100,6 +100,19 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest();
+            var existingservicetype=serviceTypeRepository.GetServiceType(servicetypeid);
+            if (existingservicetype == null) return NotFound();
+
+            //manually map
+            existingservicetype.ServiceTypeId = updateservicetype.ServiceTypeId;
+            existingservicetype.ServiceTypeTitle=updateservicetype.ServiceTypeTitle;
+           
+
+            if (!serviceTypeRepository.UpdateServiceType(existingservicetype))
+            {
+                ModelState.AddModelError("", "Something went wrong updating part");
+                return StatusCode(500, ModelState);
+            }
 
             return NoContent();
         }

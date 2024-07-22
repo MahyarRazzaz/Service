@@ -104,14 +104,22 @@ namespace ServicesReviewApp.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
             
+            var existingcar= carRepository.getCar(carId);
+            if (existingcar==null)return NotFound();
 
-            /* var carMap = _mapper.Map<Car>(updatedcar);
-             if (!carRepository.UpdateCar(carMap))
+            //manually map
+            existingcar.CarId=updatecar.CarId;
+            existingcar.CarTitle=updatecar.CarTitle;
+            existingcar.ChassisNumber=updatecar.ChassisNumber;
+            existingcar.PlatsNumber=updatecar.PlatsNumber;
+            
+            
+             if (!carRepository.UpdateCar(existingcar))
              {
-                 ModelState.AddModelError("", "Something went wrong updating category");
+                 ModelState.AddModelError("", "Something went wrong updating car");
                  return StatusCode(500, ModelState);
              }
-            */
+            
             return NoContent();
         }
         [HttpDelete("{carId}")]

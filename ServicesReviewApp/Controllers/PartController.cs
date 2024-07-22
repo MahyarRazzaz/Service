@@ -98,8 +98,23 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest();
+
+
+            var existingpart = partRepository.GetPart(partid);
+            if (existingpart == null) return NotFound();
+
+            //manually map
+            existingpart.PartId=updatepart.PartId;
+            existingpart.PartTitle=updatepart.PartTitle;
             
-            return NoContent();
+
+
+            if (!partRepository.UpdatePart(existingpart))
+            {
+                ModelState.AddModelError("", "Something went wrong updating part");
+                return StatusCode(500, ModelState);
+            }
+                return NoContent();
         }
         [HttpDelete("{partid}")]
         [ProducesResponseType(400)]

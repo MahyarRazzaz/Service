@@ -102,7 +102,20 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest();
+            var existingcustomer = customerRepository.GetCustomerById(customerid);
+            if (existingcustomer == null) return NotFound();
 
+            //manually map
+            existingcustomer.FirstName = updatecustomer.FirstName;
+            existingcustomer.LastName = updatecustomer.LastName;
+           
+            
+
+            if (!customerRepository.UpdateCustomer(existingcustomer))
+            {
+                ModelState.AddModelError("", "Something went wrong updating customer");
+                return StatusCode(500, ModelState);
+            }
             return NoContent();
         }
         [HttpDelete("{customerId}")]

@@ -99,33 +99,29 @@ namespace ServicesReviewApp.Controllers
             if (!serviceRepository.ServiceExist(serviceid));
             return NotFound();
 
-            if (!ModelState.IsValid)
+
+            var existingservice = serviceRepository.GetService(serviceid);
+            if (existingservice == null) return NotFound();
+
+            //manually map
+            existingservice.ServiceId=updateservice.ServiceId;
+            existingservice.ServiceDate = updateservice.ServiceDate;
+            existingservice.ServiceTitle = updateservice.ServiceTitle;
+            existingservice.Wage = updateservice.Wage;
+            existingservice.ServiceNumber = updateservice.ServiceNumber;
+            
+
+
+
+            if (!serviceRepository.UpdateService(existingservice))
+            {
+                ModelState.AddModelError("", "Something went wrong updating service");
+                return StatusCode(500, ModelState);
+                if (!ModelState.IsValid)
                 return BadRequest();
 
             return NoContent();
         }
-        [HttpDelete("{serviceid}")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public IActionResult DeleteService(int serviceid)
-        {
-            if (!serviceRepository.ServiceExist(serviceid))
-            {
-                return NotFound();
-            }
-
-            var serviceToDelete = serviceRepository.GetService(serviceid);
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            if (serviceRepository.DeleteService(serviceToDelete))
-            {
-                ModelState.AddModelError("", "Something went wrong deleting service");
-            }
-
-            return NoContent();
         }
     }
 }
