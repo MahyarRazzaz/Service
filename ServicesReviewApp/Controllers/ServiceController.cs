@@ -53,11 +53,11 @@ namespace ServicesReviewApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult Createservice([FromBody] ServiceDto serviceCreate)
         {
-            if (serviceCreate== null)
+            if (serviceCreate == null)
                 return BadRequest(ModelState);
 
-            
-            var service = serviceRepository.GetServices().Where(s=>s.ServiceId==serviceCreate.ServiceId).FirstOrDefault();
+
+            var service = serviceRepository.GetServices().Where(s => s.ServiceId == serviceCreate.ServiceId).FirstOrDefault();
 
             if (service != null)
             {
@@ -67,14 +67,36 @@ namespace ServicesReviewApp.Controllers
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+
+            // تبدیل ServiceDetailDto به ServicesDetail
+            var serviceDetails = new List<ServicesDetail>();
+            foreach (var detailDto in serviceCreate.ServicesDetails)
+            {
+                var detail = new ServicesDetail
+                {
+                    ServiceId = detailDto.ServiceId,
+                    ServicesDetailId= detailDto.ServicesDetailId,
+                    ServiceTypeId= detailDto.ServiceTypeId,
+                   
+                };
+                serviceDetails.Add(detail);
+            }
+
+
             var servicemap = new Service
             {
-               // ServiceId = serviceCreate.ServiceId,
+                // ServiceId = serviceCreate.ServiceId,
                 ServiceTitle = serviceCreate.ServiceTitle,
                 Wage = serviceCreate.Wage,
                 ServiceNumber = serviceCreate.ServiceNumber,
                 ServiceDate = serviceCreate.ServiceDate,
+                CustomerId = serviceCreate.CustomerId,
+                ServicesDetails = serviceDetails
             };
+
+         
+
 
             if (!serviceRepository.CreateService(servicemap))
             {
@@ -84,44 +106,64 @@ namespace ServicesReviewApp.Controllers
 
             return Ok("Successfully created");
         }
-        [HttpPut("{serviceid}")]
+        [HttpPut]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult Updateservice(int serviceid, [FromBody] ServiceDto updateservice)
+        public IActionResult Updateservice( [FromBody] ServiceDto updateservice)
         {
             if (updateservice == null)
                 return BadRequest(ModelState);
 
-            if (serviceid != updateservice.ServiceId)
-                return BadRequest(ModelState);
+            /*if (serviceid != updateservice.ServiceId)
+                return BadRequest(ModelState);*/
 
-            if (!serviceRepository.ServiceExist(serviceid));
+            if (!serviceRepository.ServiceExist(updateservice.ServiceId));
             return NotFound();
+            var existservice=serviceRepository.GetService(updateservice.ServiceId);
+            if (existservice == null)
+                return NotFound();
 
-
-            var existingservice = serviceRepository.GetService(serviceid);
-            if (existingservice == null) return NotFound();
-
-            //manually map
-            existingservice.ServiceId=updateservice.ServiceId;
-            existingservice.ServiceDate = updateservice.ServiceDate;
-            existingservice.ServiceTitle = updateservice.ServiceTitle;
-            existingservice.Wage = updateservice.Wage;
-            existingservice.ServiceNumber = updateservice.ServiceNumber;
+            //maping
+            existservice.ServiceId=updateservice.ServiceId;
+            existservice.Wage=updateservice.Wage;
+            existservice.ServiceDate=updateservice.ServiceDate;
+            existservice.ServiceNumber=updateservice.ServiceNumber;
+            existservice.ServiceTitle=updateservice.ServiceTitle;
             
 
-
-
-            if (!serviceRepository.UpdateService(existingservice))
+            if (!serviceRepository.UpdateService(existservice))
             {
                 ModelState.AddModelError("", "Something went wrong updating service");
                 return StatusCode(500, ModelState);
-                if (!ModelState.IsValid)
+            }
+            if (!ModelState.IsValid)
                 return BadRequest();
 
             return NoContent();
         }
+        [HttpDelete("{serviceid}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteService(int serviceid)
+        {
+            if (!serviceRepository.ServiceExist(serviceid))
+            {
+                return NotFound();
+            }
+
+            var serviceToDelete = serviceRepository.GetService(serviceid);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (serviceRepository.DeleteService(serviceToDelete))
+            {
+                ModelState.AddModelError("", "Something went wrong deleting service");
+            }
+
+            return NoContent();
         }
     }
 }

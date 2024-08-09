@@ -81,26 +81,26 @@ namespace ServicesReviewApp.Controllers
 
             return Ok("Successfully created");
         }
-        [HttpPut("{partid}")]
+        [HttpPut]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdatePart(int partid, [FromBody] PartDto updatepart)
+        public IActionResult UpdatePart( [FromBody] PartDto updatepart)
         {
             if (updatepart == null)
                 return BadRequest(ModelState);
 
-            if (partid != updatepart.PartId)
-                return BadRequest(ModelState);
+            /*if (partid != updatepart.PartId)
+                return BadRequest(ModelState);*/
 
-            if (!partRepository.PartExist(partid)) ;
+            if (!partRepository.PartExist(updatepart.PartId)) ;
             return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest();
 
 
-            var existingpart = partRepository.GetPart(partid);
+            var existingpart = partRepository.GetPart(updatepart.PartId);
             if (existingpart == null) return NotFound();
 
             //manually map

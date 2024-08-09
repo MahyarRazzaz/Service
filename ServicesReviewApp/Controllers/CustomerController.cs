@@ -74,38 +74,31 @@ namespace ServicesReviewApp.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            /*var customermap = _mapper.Map<Customer>(customerCreate);
-
-            if (!customerRepository.CreateCustomer(customermap))
-            {
-                ModelState.AddModelError("", "Something went wrong while savin");
-                return StatusCode(500, ModelState);
-            }
-            */
-
             return Ok("Successfully created");
         }
-        [HttpPut("{customerid}")]
+        [HttpPut]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateCaustomer(int customerid, [FromBody] CustomerDto updatecustomer)
+        public IActionResult UpdateCaustomer( [FromBody] CustomerDto updatecustomer)
         {
             if (updatecustomer == null)
                 return BadRequest(ModelState);
 
-            if (customerid != updatecustomer.CustomerId)
-                return BadRequest(ModelState);
+           /* if (customerid != updatecustomer.CustomerId)
+                return BadRequest(ModelState);*/
 
-            if (!customerRepository.customerExist(customerid));
+            if (!customerRepository.customerExist(updatecustomer.CustomerId));
                 return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest();
-            var existingcustomer = customerRepository.GetCustomerById(customerid);
+            /*if (!ModelState.IsValid)
+                return BadRequest();*/
+
+            var existingcustomer = customerRepository.GetCustomerById(updatecustomer.CustomerId);
             if (existingcustomer == null) return NotFound();
 
             //manually map
+            existingcustomer.CustomerId = updatecustomer.CustomerId;
             existingcustomer.FirstName = updatecustomer.FirstName;
             existingcustomer.LastName = updatecustomer.LastName;
            

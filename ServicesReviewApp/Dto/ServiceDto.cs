@@ -12,6 +12,8 @@ namespace ServicesReviewApp.Dto
         //?    
         public int CustomerId { get; set; }
         public int CarId { get; set; }
+        public ICollection<ServicesDetail> ServicesDetails { get; set; }
+        
        
     }
 }

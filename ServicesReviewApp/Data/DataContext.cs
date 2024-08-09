@@ -45,7 +45,7 @@ namespace ServicesReviewApp.Data
             modelBuilder.Entity<Service>()
                 .HasOne(s => s.Car)
                 .WithMany(Se => Se.Services)
-                .HasForeignKey(e => e.CarId);
+                .HasForeignKey(s => s.CarId);
         }
         
     }

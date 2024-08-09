@@ -86,25 +86,25 @@ namespace ServicesReviewApp.Controllers
         }
 
 
-        [HttpPut("{carid}")]
+        [HttpPut]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
-        public IActionResult UpdateCar(int carId, [FromBody] CarDto updatecar)
+        public IActionResult UpdateCar( [FromBody] CarDto updatecar)
         {
             if (updatecar == null)
                 return BadRequest(ModelState);
 
-            if (carId != updatecar.CarId)
-                return BadRequest(ModelState);
+            /*if (carId != updatecar.CarId)
+               return BadRequest(ModelState);*/
 
-            if(!carRepository.CarExist(carId))
+            if(!carRepository.CarExist(updatecar.CarId))
                 return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest();
+           /* if (!ModelState.IsValid)
+                return BadRequest();*/
             
-            var existingcar= carRepository.getCar(carId);
+            var existingcar= carRepository.getCar(updatecar.CarId);
             if (existingcar==null)return NotFound();
 
             //manually map
@@ -122,7 +122,7 @@ namespace ServicesReviewApp.Controllers
             
             return NoContent();
         }
-        [HttpDelete("{carId}")]
+        [HttpDelete("{carid}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
