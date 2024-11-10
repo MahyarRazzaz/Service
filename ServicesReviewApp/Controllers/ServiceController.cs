@@ -40,7 +40,17 @@ namespace ServicesReviewApp.Controllers
 
             var datamodel = serviceRepository.GetServices();
 
-            var service= datamodel.Select(S=> new ServiceDto { ServiceId=S.ServiceId,ServiceTitle=S.ServiceTitle,ServiceNumber=S.ServiceNumber,ServiceDate=S.ServiceDate,Wage=S.Wage,CustomerId=S.CustomerId,CarId=S.CarId});
+            var service= datamodel.Select(S=> new ServiceDto { ServiceId=S.ServiceId,ServiceTitle=S.ServiceTitle,ServiceNumber=S.ServiceNumber,ServiceDate=S.ServiceDate,Wage=S.Wage,CustomerId=S.CustomerId,CarId=S.CarId,
+                ServicesDetails = S.ServicesDetails.Select(detail => new ServiceDetailDto
+                {
+                    //ServiceId = detail.ServiceId,
+                    //ServicesDetailId = detail.ServicesDetailId,
+                    ServiceTypeId = detail.ServiceTypeId,
+                    PartId = detail.PartId,
+                    Wage = detail.Wage,
+                    PartPrice = detail.PartPrice
+                }).ToList()
+            });
 
 
             if (!ModelState.IsValid)
@@ -75,9 +85,12 @@ namespace ServicesReviewApp.Controllers
             {
                 var detail = new ServicesDetail
                 {
-                    ServiceId = detailDto.ServiceId,
-                    ServicesDetailId= detailDto.ServicesDetailId,
+                    //ServiceId = detailDto.ServiceID,
+                    //ServicesDetailId= detailDto.ServicesDetailId,
                     ServiceTypeId= detailDto.ServiceTypeId,
+                    PartId=detailDto.PartId,
+                    Wage=detailDto.Wage,
+                    PartPrice=detailDto.PartPrice,
                    
                 };
                 serviceDetails.Add(detail);
@@ -86,16 +99,15 @@ namespace ServicesReviewApp.Controllers
 
             var servicemap = new Service
             {
-                // ServiceId = serviceCreate.ServiceId,
+                //ServiceId = serviceCreate.ServiceId,
                 ServiceTitle = serviceCreate.ServiceTitle,
                 Wage = serviceCreate.Wage,
                 ServiceNumber = serviceCreate.ServiceNumber,
                 ServiceDate = serviceCreate.ServiceDate,
                 CustomerId = serviceCreate.CustomerId,
-                ServicesDetails = serviceDetails
+                CarId= serviceCreate.CarId,
+                ServicesDetails= serviceDetails,
             };
-
-         
 
 
             if (!serviceRepository.CreateService(servicemap))

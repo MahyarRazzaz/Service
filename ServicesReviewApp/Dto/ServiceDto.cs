@@ -12,7 +12,7 @@ namespace ServicesReviewApp.Dto
         //?    
         public int CustomerId { get; set; }
         public int CarId { get; set; }
-        public ICollection<ServicesDetail> ServicesDetails { get; set; }
+        public ICollection<ServiceDetailDto> ServicesDetails { get; set; }
         
        
     }
