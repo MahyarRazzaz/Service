@@ -38,8 +38,14 @@ namespace ServicesReviewApp.Repository
 
         public ICollection<Service> GetServices()
         {
-            return context.Services.OrderBy(s => s.ServiceId).ToList();
+            return context.Services.Include(s=>s.ServicesDetails).OrderBy(s => s.ServiceId).ToList();
         }
+        /*public ICollection<Service> GetServices()
+        {
+            return context.Services
+                           .Include(s => s.ServicesDetails) // Load related data
+                           .ToList(); // Convert to a concrete collection (ICollection)
+        }*/
 
         public bool Save()
         {

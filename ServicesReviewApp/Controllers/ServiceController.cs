@@ -28,7 +28,7 @@ namespace ServicesReviewApp.Controllers
 
             return Ok(service);
         }
-        [HttpGet("{id}")]
+        /*[HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(Service))]
         [ProducesResponseType(400)]
         public IActionResult GetService(int id)
@@ -58,6 +58,45 @@ namespace ServicesReviewApp.Controllers
 
             return Ok(service);
         }
+        */
+        [HttpGet("{id}")]
+        [ProducesResponseType(200, Type = typeof(ServiceDto))]
+        [ProducesResponseType(400)]
+        public IActionResult GetService(int id)
+        {
+            if (!serviceRepository.ServiceExist(id))
+                return NotFound();
+
+            var service = serviceRepository.GetServices()
+                                            .Where(s => s.ServiceId == id)
+                                            .Select(s => new ServiceDto
+                                            {
+                                                ServiceId = s.ServiceId,
+                                                ServiceTitle = s.ServiceTitle,
+                                                ServiceNumber = s.ServiceNumber,
+                                                ServiceDate = s.ServiceDate,
+                                                Wage = s.Wage,
+                                                CustomerId = s.CustomerId,
+                                                CarId = s.CarId,
+                                                ServicesDetails = s.ServicesDetails.Select(detail => new ServiceDetailDto
+                                                {
+                                                    ServiceTypeId = detail.ServiceTypeId,
+                                                    PartId = detail.PartId,
+                                                    Wage = detail.Wage,
+                                                    PartPrice = detail.PartPrice
+                                                }).ToList()
+                                            })
+                                            .FirstOrDefault();
+
+            if (service == null)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(service);
+        }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
