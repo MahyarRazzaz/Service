@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car List</title>
+    <script>
+        async function fetchCars() {
+            try {
+                const response = await fetch('https://localhost:7169/api/Car');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const cars = await response.json();
+                console.log(cars);  // اضافه کردن این خط برای بررسی پاسخ
+                displayCars(cars);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        function displayCars(cars) {
+    const carList = document.getElementById('carList');
+    carList.innerHTML = '';
+    cars.forEach(car => {
+        console.log('Car object:', car);  // اضافه کردن این خط برای بررسی هر شیء car
+        console.log('CarTitle:', car.CarTitle);  // اضافه کردن این خط برای بررسی CarTitle
+        console.log('ChassisNumber:', car.ChassisNumber);  // اضافه کردن این خط برای بررسی ChassisNumber
+        console.log('PlatesNumber:', car.PlatesNumber);  // اضافه کردن این خط برای بررسی PlatesNumber
+
+        const listItem = document.createElement('li');
+        listItem.textContent = `Title: ${car.CarTitle}, Chassis Number: ${car.ChassisNumber}, Plates Number: ${car.PlatesNumber}`;
+        carList.appendChild(listItem);
+    });
+}
+
+
+
+        window.onload = () => {
+            fetchCars();
+        };
+    </script>
+</head>
+<body>
+    <h1>Car List</h1>
+    <ul id="carList"></ul>
+</body>
+</html>

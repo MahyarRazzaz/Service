@@ -93,7 +93,7 @@ namespace ServicesReviewApp.Controllers
             /*if (partid != updatepart.PartId)
                 return BadRequest(ModelState);*/
 
-            if (!partRepository.PartExist(updatepart.PartId)) ;
+            if (!partRepository.PartExist(updatepart.PartId))
             return NotFound();
 
             if (!ModelState.IsValid)

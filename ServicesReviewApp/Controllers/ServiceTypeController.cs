@@ -95,7 +95,7 @@ namespace ServicesReviewApp.Controllers
             if (servicetypeid != updateservicetype.ServiceTypeId)
                 return BadRequest(ModelState);
 
-            if (!serviceTypeRepository.ServicTypeExist(servicetypeid));
+            if (!serviceTypeRepository.ServicTypeExist(servicetypeid))
             return NotFound();
 
             if (!ModelState.IsValid)

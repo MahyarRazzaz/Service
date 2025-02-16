@@ -88,7 +88,7 @@ namespace ServicesReviewApp.Controllers
            /* if (customerid != updatecustomer.CustomerId)
                 return BadRequest(ModelState);*/
 
-            if (!customerRepository.customerExist(updatecustomer.CustomerId));
+            if (!customerRepository.customerExist(updatecustomer.CustomerId)) 
                 return NotFound();
 
             /*if (!ModelState.IsValid)

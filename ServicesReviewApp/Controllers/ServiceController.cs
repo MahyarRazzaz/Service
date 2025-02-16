@@ -16,49 +16,79 @@ namespace ServicesReviewApp.Controllers
         {
             this.serviceRepository = serviceRepository;
         }
+        /* [HttpGet]
+         [ProducesResponseType(200, Type = typeof(IEnumerable<ServiceDto>))]
+         public IActionResult Getparts()
+         {
+
+             var service = serviceRepository.GetServices();
+
+             if (!ModelState.IsValid)
+                 return BadRequest(ModelState);
+
+             return Ok(service);
+         }
+         [HttpGet("{id}")]
+         [ProducesResponseType(200, Type = typeof(Service))]
+         [ProducesResponseType(400)]
+         public IActionResult GetService(int id)
+         {
+
+
+             if (!serviceRepository.ServiceExist(id))
+                 return NotFound();
+
+             var datamodel = serviceRepository.GetServices();
+
+             var service= datamodel.Select(S=> new ServiceDto { ServiceId=S.ServiceId,ServiceTitle=S.ServiceTitle,ServiceNumber=S.ServiceNumber,ServiceDate=S.ServiceDate,Wage=S.Wage,CustomerId=S.CustomerId,CarId=S.CarId,
+                 ServicesDetails = S.ServicesDetails.Select(detail => new ServiceDetailDto
+                 {
+                     //ServiceId = detail.ServiceId,
+                     //ServicesDetailId = detail.ServicesDetailId,
+                     ServiceTypeId = detail.ServiceTypeId,
+                     PartId = detail.PartId,
+                     Wage = detail.Wage,
+                     PartPrice = detail.PartPrice
+                 }).ToList()
+             });
+
+
+             if (!ModelState.IsValid)
+                 return BadRequest(ModelState);
+
+             return Ok(service);
+         }
+         */
         [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<Service>))]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<ServiceDto>))]
         public IActionResult Getparts()
         {
-            
-            var service = serviceRepository.GetServices();
+            var services = serviceRepository.GetServices()
+                                             .Select(s => new ServiceDto
+                                             {
+                                                 ServiceId = s.ServiceId,
+                                                 ServiceTitle = s.ServiceTitle,
+                                                 ServiceNumber = s.ServiceNumber,
+                                                 ServiceDate = s.ServiceDate,
+                                                 Wage = s.Wage,
+                                                 CustomerId = s.CustomerId,
+                                                 CarId = s.CarId,
+                                                 ServicesDetails = s.ServicesDetails.Select(detail => new ServiceDetailDto
+                                                 {
+                                                     ServiceTypeId = detail.ServiceTypeId,
+                                                     PartId = detail.PartId,
+                                                     Wage = detail.Wage,
+                                                     PartPrice = detail.PartPrice
+                                                 }).ToList()
+                                             })
+                                             .ToList();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(service);
+            return Ok(services);
         }
-        /*[HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(Service))]
-        [ProducesResponseType(400)]
-        public IActionResult GetService(int id)
-        {
 
-           
-            if (!serviceRepository.ServiceExist(id))
-                return NotFound();
-
-            var datamodel = serviceRepository.GetServices();
-
-            var service= datamodel.Select(S=> new ServiceDto { ServiceId=S.ServiceId,ServiceTitle=S.ServiceTitle,ServiceNumber=S.ServiceNumber,ServiceDate=S.ServiceDate,Wage=S.Wage,CustomerId=S.CustomerId,CarId=S.CarId,
-                ServicesDetails = S.ServicesDetails.Select(detail => new ServiceDetailDto
-                {
-                    //ServiceId = detail.ServiceId,
-                    //ServicesDetailId = detail.ServicesDetailId,
-                    ServiceTypeId = detail.ServiceTypeId,
-                    PartId = detail.PartId,
-                    Wage = detail.Wage,
-                    PartPrice = detail.PartPrice
-                }).ToList()
-            });
-
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(service);
-        }
-        */
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(ServiceDto))]
         [ProducesResponseType(400)]
@@ -169,9 +199,9 @@ namespace ServicesReviewApp.Controllers
             /*if (serviceid != updateservice.ServiceId)
                 return BadRequest(ModelState);*/
 
-            if (!serviceRepository.ServiceExist(updateservice.ServiceId));
+            if (!serviceRepository.ServiceExist(updateservice.ServiceId))
             return NotFound();
-            var existservice=serviceRepository.GetService(updateservice.ServiceId);
+            var existservice = serviceRepository.GetService(updateservice.ServiceId);
             if (existservice == null)
                 return NotFound();
 

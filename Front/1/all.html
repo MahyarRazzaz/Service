@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <title>Data Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .item-info {
+            display: flex;
+            flex-direction: column;
+        }
+        .item-info span {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        async function fetchData(apiUrl, containerId, fieldMapping) {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const items = await response.json();
+                console.log(`${containerId} data:`, items);
+                displayData(items, containerId, fieldMapping);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        function displayData(items, containerId, fieldMapping) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            items.forEach(item => {
+                const listItem = document.createElement('li');
+                const itemInfo = Object.entries(fieldMapping).map(([label, field]) => `<span class="${field.toLowerCase()}">${label}: ${item[field] || 'N/A'}</span>`).join('');
+                listItem.innerHTML = `
+                    <div class="item-info">
+                        ${itemInfo}
+                    </div>
+                `;
+                container.appendChild(listItem);
+            });
+        }
+
+        window.onload = () => {
+            fetchData('https://localhost:7169/api/Customer', 'customerList', {
+                'Customer ID': 'customerId',
+                'First Name': 'firstName',
+                'Last Name': 'lastName'
+            });
+            fetchData('https://localhost:7169/api/Part', 'partList', {
+                'Part ID': 'partId',
+                'Part Title': 'partTitle'
+            });
+            fetchData('https://localhost:7169/api/ServiceType', 'serviceTypeList', {
+                'Service Type ID': 'serviceTypeId',
+                'Service Type Title': 'serviceTypeTitle'
+            });
+            fetchData('https://localhost:7169/api/Car', 'carList', {
+                'Car Title': 'carTitle',
+                'Chassis Number': 'chassisNumber',
+                'Plates Number': 'platsNumber'  // مطمئن شوید که نام فیلد درست است
+            });
+            // Add more fetchData calls for other controllers if needed
+        };
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="section">
+            <h2>Customer List</h2>
+            <ul id="customerList"></ul>
+        </div>
+        <div class="section">
+            <h2>Part List</h2>
+            <ul id="partList"></ul>
+        </div>
+        <div class="section">
+            <h2>Service Type List</h2>
+            <ul id="serviceTypeList"></ul>
+        </div>
+        <div class="section">
+            <h2>Car List</h2>
+            <ul id="carList"></ul>
+        </div>
+    </div>
+</body>
+</html>
