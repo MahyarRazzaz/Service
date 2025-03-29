@@ -38,8 +38,10 @@ namespace ServicesReviewApp.Repository
 
         public ICollection<Service> GetServices()
         {
-            return context.Services.Include(s=>s.ServicesDetails).OrderBy(s => s.ServiceId).ToList();
+            return context.Services.Include(s=>s.ServicesDetails).OrderBy(s => s.ServiceId).ToList(); 
         }
+
+
         /*public ICollection<Service> GetServices()
         {
             return context.Services

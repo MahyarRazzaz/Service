@@ -205,6 +205,8 @@ namespace ServicesReviewApp.Controllers
             if (existservice == null)
                 return NotFound();
 
+
+
             //maping
             existservice.ServiceId=updateservice.ServiceId;
             existservice.Wage=updateservice.Wage;
